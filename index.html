@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Roleta dos Oscars</title>
+
+    <link rel="stylesheet" href="./css/style.css">
+
+</head>
+
+<body>
+
+    <!-- ==========================
+         AUTENTICAÇÃO
+    =========================== -->
+
+    <section id="authScreen" class="auth-screen">
+
+        <div class="auth-card">
+
+            <span class="auth-card__eyebrow">
+                ACADEMY AWARDS
+            </span>
+
+            <h1 class="auth-card__title">
+                Roleta dos Oscars
+            </h1>
+
+            <p class="auth-card__subtitle">
+                Entre para salvar seus sorteios
+            </p>
+
+
+            <form id="authForm">
+
+                <div class="form-group">
+
+                    <label for="email">
+                        E-mail
+                    </label>
+
+                    <input id="email" type="email" placeholder="seu@email.com" required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Senha
+                    </label>
+
+                    <input id="password" type="password" placeholder="Sua senha" minlength="6" required>
+
+                </div>
+
+
+                <button id="loginButton" type="submit" class="button button--primary">
+                    Entrar
+                </button>
+
+            </form>
+
+
+            <button id="registerButton" type="button" class="auth-register">
+                Criar uma conta
+            </button>
+
+
+            <p id="authMessage" class="auth-message"></p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================
+         APLICAÇÃO
+    =========================== -->
+
+    <main id="app" class="app" style="display: none;">
+        <header class="header">
+
+            <div class="header__top">
+
+                <div>
+
+                    <span class="header__eyebrow">
+                        ACADEMY AWARDS
+                    </span>
+
+                    <h1 class="header__title">
+                        Roleta dos Oscars
+                    </h1>
+
+                    <p class="header__subtitle">
+                        Sorteie um ano do Oscar entre 1980 e 2026
+                    </p>
+
+                </div>
+
+
+                <button id="logoutButton" type="button" class="logout-button">
+                    Sair
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <section class="game">
+
+            <!-- ROLETA -->
+
+            <div class="wheel-container">
+
+                <div class="wheel-wrapper">
+
+                    <div class="wheel-pointer"></div>
+
+                    <canvas id="wheel" class="wheel"></canvas>
+
+                    <div class="wheel-center">
+
+                        <span>
+                            OSCARS
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PAINEL -->
+
+            <aside class="panel">
+
+                <div class="result">
+
+                    <span class="result__label">
+                        ANO SORTEADO
+                    </span>
+
+                    <strong id="result" class="result__year">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <button id="spinButton" class="button button--primary" type="button">
+                    GIRAR A ROLETA
+                </button>
+
+
+                <button id="resetButton" class="button button--secondary" type="button">
+                    Restaurar anos
+                </button>
+
+
+                <div class="stats">
+
+                    <div class="stat">
+
+                        <strong id="remaining" class="stat__value">
+                            47
+                        </strong>
+
+                        <span class="stat__label">
+                            Anos restantes
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat">
+
+                        <strong id="spins" class="stat__value">
+                            0
+                        </strong>
+
+                        <span class="stat__label">
+                            Giros
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="history">
+
+                    <h2 class="history__title">
+                        Histórico
+                    </h2>
+
+                    <div id="historyList" class="history__list"></div>
+
+                </div>
+
+            </aside>
+
+        </section>
+
+    </main>
+
+
+    <!-- SUPABASE -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="./js/supabase.js"></script>
+
+    <script src="./js/app.js"></script>
+
+</body>
