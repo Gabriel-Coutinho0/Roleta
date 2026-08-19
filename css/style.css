@@ -522,7 +522,6 @@ body {
     margin-top: 20px;
 }
 
-
 .history__title {
     margin-bottom: 10px;
 
@@ -552,20 +551,20 @@ body {
 
 
 .history__item {
-    padding:
-        6px 10px;
 
-    color: #e6c95d;
+    display: inline-flex;
 
-    font-size: 12px;
+    align-items: center;
 
-    border:
-        1px solid rgba(212, 175, 55, 0.2);
+    gap: 7px;
 
-    border-radius: 20px;
+    margin: 0 5px 8px 0;
 
-    background:
-        rgba(212, 175, 55, 0.12);
+    padding: 0;
+
+    background: transparent;
+
+    border: 0;
 }
 
 
@@ -1597,30 +1596,188 @@ body {
 }
 
 /* =========================================================
-   HISTÓRICO CLICÁVEL
+   HISTÓRICO
+========================================================= */
+
+.history__list {
+    max-height: 180px;
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    align-items: center;
+
+    gap: 8px;
+
+    overflow-y: auto;
+}
+
+
+/* =========================================================
+   ITEM
 ========================================================= */
 
 .history__item {
 
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    margin: 0;
+
+    padding: 0;
+
+    background: transparent;
+
+    border: none;
+}
+
+
+/* =========================================================
+   CHECKBOX
+========================================================= */
+
+.history__checkbox {
+
     appearance: none;
 
-    border: 1px solid rgba(212, 175, 55, 0.35);
+    -webkit-appearance: none;
 
-    background: rgba(212, 175, 55, 0.08);
+    width: 19px;
 
-    color: #d4af37;
+    height: 19px;
 
-    padding: 7px 14px;
+    flex-shrink: 0;
 
-    border-radius: 20px;
+    margin: 0;
 
-    font-family: inherit;
+    position: relative;
+
+    cursor: pointer;
+
+    background: #151515;
+
+    border: 1px solid rgba(212, 175, 55, 0.45);
+
+    border-radius: 5px;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* Hover */
+
+.history__checkbox:hover {
+
+    border-color:
+        #d4af37;
+
+    background:
+        rgba(212, 175, 55, 0.08);
+
+    transform:
+        scale(1.05);
+}
+
+
+/* Checked */
+
+.history__checkbox:checked {
+
+    background:
+        #d4af37;
+
+    border-color:
+        #d4af37;
+
+    box-shadow:
+        0 0 8px rgba(212, 175, 55, 0.25);
+}
+
+
+/* Check */
+
+.history__checkbox:checked::after {
+
+    content: "✓";
+
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color:
+        #17120a;
 
     font-size: 12px;
 
-    font-weight: 600;
+    font-weight: 900;
 
-    cursor: pointer;
+    line-height: 1;
+}
+
+
+/* Desabilitado */
+
+.history__checkbox:disabled {
+
+    opacity: 0.5;
+
+    cursor: wait;
+}
+
+
+/* =========================================================
+   ANO
+========================================================= */
+
+.history__year {
+
+    appearance: none;
+
+    -webkit-appearance: none;
+
+    border:
+        1px solid rgba(212, 175, 55, 0.35);
+
+    background:
+        rgba(212, 175, 55, 0.08);
+
+    color:
+        #d4af37;
+
+    padding:
+        7px 13px;
+
+    border-radius:
+        18px;
+
+    font-family:
+        inherit;
+
+    font-size:
+        12px;
+
+    font-weight:
+        600;
+
+    line-height:
+        1;
+
+    cursor:
+        pointer;
 
     transition:
         background 0.2s ease,
@@ -1630,29 +1787,175 @@ body {
 }
 
 
-.history__item:hover {
+/* Hover */
 
-    background: rgba(212, 175, 55, 0.18);
+.history__year:hover {
 
-    border-color: rgba(212, 175, 55, 0.7);
+    background:
+        rgba(212, 175, 55, 0.18);
 
-    color: #f1cf62;
+    border-color:
+        rgba(212, 175, 55, 0.75);
 
-    transform: translateY(-1px);
+    color:
+        #f1cf62;
+
+    transform:
+        translateY(-1px);
 }
 
 
-.history__item:active {
+/* Clique */
 
-    transform: translateY(0);
+.history__year:active {
 
-    background: rgba(212, 175, 55, 0.25);
+    transform:
+        translateY(0);
+
+    background:
+        rgba(212, 175, 55, 0.25);
 }
 
 
-.history__item:disabled {
+/* Carregando */
 
-    opacity: 0.6;
+.history__year:disabled {
 
-    cursor: wait;
+    opacity:
+        0.55;
+
+    cursor:
+        wait;
+
+    transform:
+        none;
+}
+
+
+/* =========================================================
+   FILME ASSISTIDO
+========================================================= */
+
+/*
+ * Quando o filme já foi assistido,
+ * o ano fica mais discreto.
+ */
+
+.history__item:has(.history__checkbox:checked) .history__year {
+
+    color:
+        #8f7932;
+
+    background:
+        rgba(212, 175, 55, 0.04);
+
+    border-color:
+        rgba(212, 175, 55, 0.18);
+}
+
+
+/*
+ * Mantém o hover funcionando mesmo
+ * para filmes assistidos.
+ */
+
+.history__item:has(.history__checkbox:checked) .history__year:hover {
+
+    color:
+        #d4af37;
+
+    background:
+        rgba(212, 175, 55, 0.12);
+
+    border-color:
+        rgba(212, 175, 55, 0.5);
+}
+
+
+/* =========================================================
+   ESTATÍSTICAS
+========================================================= */
+
+.stats {
+
+    grid-template-columns:
+        repeat(3, 1fr);
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .stats {
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap:
+            7px;
+    }
+
+
+    .stat {
+
+        padding:
+            10px 5px;
+    }
+
+
+    .stat__value {
+
+        font-size:
+            20px;
+    }
+
+
+    .stat__label {
+
+        font-size:
+            9px;
+
+        line-height:
+            1.2;
+    }
+
+
+    .history__list {
+
+        gap:
+            9px;
+
+        max-height:
+            200px;
+    }
+
+
+    .history__item {
+
+        gap:
+            5px;
+    }
+
+
+    .history__checkbox {
+
+        width:
+            18px;
+
+        height:
+            18px;
+    }
+
+
+    .history__year {
+
+        padding:
+            7px 11px;
+
+        font-size:
+            11px;
+    }
 }
