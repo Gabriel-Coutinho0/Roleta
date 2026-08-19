@@ -1,0 +1,9 @@
+# Python
+__pycache__/
+*.pyc
+
+# IMDb datasets
+scraper/data/*.tsv.gz
+
+# Arquivos temporários
+*.tmp
