@@ -1595,3 +1595,64 @@ body {
         flex-wrap: wrap;
     }
 }
+
+/* =========================================================
+   HISTÓRICO CLICÁVEL
+========================================================= */
+
+.history__item {
+
+    appearance: none;
+
+    border: 1px solid rgba(212, 175, 55, 0.35);
+
+    background: rgba(212, 175, 55, 0.08);
+
+    color: #d4af37;
+
+    padding: 7px 14px;
+
+    border-radius: 20px;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.history__item:hover {
+
+    background: rgba(212, 175, 55, 0.18);
+
+    border-color: rgba(212, 175, 55, 0.7);
+
+    color: #f1cf62;
+
+    transform: translateY(-1px);
+}
+
+
+.history__item:active {
+
+    transform: translateY(0);
+
+    background: rgba(212, 175, 55, 0.25);
+}
+
+
+.history__item:disabled {
+
+    opacity: 0.6;
+
+    cursor: wait;
+}

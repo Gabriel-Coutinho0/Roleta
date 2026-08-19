@@ -679,11 +679,38 @@ function updateStats() {
 ========================================================= */
 
 function addHistory(year) {
-  const item = document.createElement("div");
+  const item = document.createElement("button");
+
+  item.type = "button";
 
   item.className = "history__item";
 
   item.textContent = year;
+
+  item.addEventListener("click", async () => {
+    try {
+      // Mostra uma indicação visual
+      // enquanto busca os dados
+      item.disabled = true;
+
+      const movie = await getOscarMovie(year);
+
+      // Mostra o card do filme
+      displayOscarMovie(movie);
+
+      // Rola suavemente até o card
+      movieInfo.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    } catch (error) {
+      console.error(`Erro ao carregar o filme de ${year}:`, error);
+
+      alert(`Não foi possível carregar as informações do filme de ${year}.`);
+    } finally {
+      item.disabled = false;
+    }
+  });
 
   historyList.prepend(item);
 }
