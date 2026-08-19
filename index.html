@@ -13,7 +13,9 @@
 
 </head>
 
+
 <body>
+
 
     <!-- ==========================
          AUTENTICAÇÃO
@@ -23,13 +25,16 @@
 
         <div class="auth-card">
 
+
             <span class="auth-card__eyebrow">
                 ACADEMY AWARDS
             </span>
 
+
             <h1 class="auth-card__title">
                 Roleta dos Oscars
             </h1>
+
 
             <p class="auth-card__subtitle">
                 Entre para salvar seus sorteios
@@ -38,11 +43,13 @@
 
             <form id="authForm">
 
+
                 <div class="form-group">
 
                     <label for="email">
                         E-mail
                     </label>
+
 
                     <input id="email" type="email" placeholder="seu@email.com" required>
 
@@ -55,6 +62,7 @@
                         Senha
                     </label>
 
+
                     <input id="password" type="password" placeholder="Sua senha" minlength="6" required>
 
                 </div>
@@ -63,6 +71,7 @@
                 <button id="loginButton" type="submit" class="button button--primary">
                     Entrar
                 </button>
+
 
             </form>
 
@@ -74,9 +83,11 @@
 
             <p id="authMessage" class="auth-message"></p>
 
+
         </div>
 
     </section>
+
 
 
     <!-- ==========================
@@ -84,9 +95,17 @@
     =========================== -->
 
     <main id="app" class="app" style="display: none;">
+
+
+        <!-- ==========================
+             HEADER
+        =========================== -->
+
         <header class="header">
 
+
             <div class="header__top">
+
 
                 <div>
 
@@ -94,9 +113,11 @@
                         ACADEMY AWARDS
                     </span>
 
+
                     <h1 class="header__title">
                         Roleta dos Oscars
                     </h1>
+
 
                     <p class="header__subtitle">
                         Sorteie um ano do Oscar entre 1980 e 2026
@@ -109,22 +130,36 @@
                     Sair
                 </button>
 
+
             </div>
+
 
         </header>
 
 
+
+        <!-- ==========================
+             JOGO
+        =========================== -->
+
         <section class="game">
 
-            <!-- ROLETA -->
+
+            <!-- ==========================
+                 ROLETA
+            =========================== -->
 
             <div class="wheel-container">
 
+
                 <div class="wheel-wrapper">
+
 
                     <div class="wheel-pointer"></div>
 
+
                     <canvas id="wheel" class="wheel"></canvas>
+
 
                     <div class="wheel-center">
 
@@ -134,45 +169,67 @@
 
                     </div>
 
+
                 </div>
+
 
             </div>
 
 
-            <!-- PAINEL -->
+
+            <!-- ==========================
+                 PAINEL
+            =========================== -->
 
             <aside class="panel">
 
+
+                <!-- RESULTADO -->
+
                 <div class="result">
+
 
                     <span class="result__label">
                         ANO SORTEADO
                     </span>
 
+
                     <strong id="result" class="result__year">
                         —
                     </strong>
 
+
                 </div>
 
+
+
+                <!-- BOTÃO GIRAR -->
 
                 <button id="spinButton" class="button button--primary" type="button">
                     GIRAR A ROLETA
                 </button>
 
 
+
+                <!-- BOTÃO RESET -->
+
                 <button id="resetButton" class="button button--secondary" type="button">
                     Restaurar anos
                 </button>
 
 
+
+                <!-- ESTATÍSTICAS -->
+
                 <div class="stats">
+
 
                     <div class="stat">
 
                         <strong id="remaining" class="stat__value">
                             47
                         </strong>
+
 
                         <span class="stat__label">
                             Anos restantes
@@ -181,11 +238,13 @@
                     </div>
 
 
+
                     <div class="stat">
 
                         <strong id="spins" class="stat__value">
                             0
                         </strong>
+
 
                         <span class="stat__label">
                             Giros
@@ -193,32 +252,208 @@
 
                     </div>
 
+
                 </div>
 
 
+
+                <!-- HISTÓRICO -->
+
                 <div class="history">
+
 
                     <h2 class="history__title">
                         Histórico
                     </h2>
 
+
                     <div id="historyList" class="history__list"></div>
+
 
                 </div>
 
+
             </aside>
 
+
         </section>
+
+
+
+        <!-- ==========================
+             INFORMAÇÕES DO FILME
+        =========================== -->
+
+        <section id="movieInfo" class="movie-info" style="display: none;">
+
+
+            <!-- POSTER -->
+
+            <div class="movie-info__poster">
+
+
+                <div class="movie-info__poster-placeholder">
+                    OSCARS
+                </div>
+
+
+            </div>
+
+
+
+            <!-- CONTEÚDO -->
+
+            <div class="movie-info__content">
+
+
+                <span class="movie-info__eyebrow">
+                    MELHOR FILME
+                </span>
+
+
+
+                <h2 id="movieTitle" class="movie-info__title">
+                    —
+                </h2>
+
+
+
+                <p id="movieOriginalTitle" class="movie-info__original-title"></p>
+
+
+
+                <!-- ANO E DURAÇÃO -->
+
+                <div class="movie-info__meta">
+
+
+                    <span id="movieReleaseYear">
+                        —
+                    </span>
+
+
+                    <span>
+                        •
+                    </span>
+
+
+                    <span id="movieRuntime">
+                        —
+                    </span>
+
+
+                </div>
+
+
+
+                <!-- GÊNEROS -->
+
+                <div id="movieGenres" class="movie-info__genres"></div>
+
+
+
+                <!-- NOTAS -->
+
+                <div class="movie-info__ratings">
+
+
+                    <div class="movie-rating">
+
+
+                        <strong id="movieRating">
+                            —
+                        </strong>
+
+
+                        <span>
+                            IMDb
+                        </span>
+
+
+                    </div>
+
+
+
+                    <div class="movie-rating">
+
+
+                        <strong id="movieVotes">
+                            —
+                        </strong>
+
+
+                        <span>
+                            votos
+                        </span>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- DIRETOR -->
+
+                <div class="movie-info__director">
+
+
+                    <strong>
+                        Direção
+                    </strong>
+
+
+                    <span id="movieDirector">
+                        —
+                    </span>
+
+
+                </div>
+
+
+
+                <!-- SOBRE -->
+
+                <div class="movie-info__overview">
+
+
+                    <strong>
+                        Sobre o filme
+                    </strong>
+
+
+                    <p id="movieOverview">
+                        —
+                    </p>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
 
     </main>
 
 
-    <!-- SUPABASE -->
+
+    <!-- ==========================
+         SUPABASE
+    =========================== -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
     <script src="./js/supabase.js"></script>
+
 
     <script src="./js/app.js"></script>
 
+
 </body>
+
+</html>

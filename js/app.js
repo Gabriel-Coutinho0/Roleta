@@ -1,6 +1,5 @@
 /* =========================================================
    ROLETA DOS OSCARS
-   Front-end + Supabase
 ========================================================= */
 
 /* =========================================================
@@ -16,20 +15,25 @@ const allYears = Array.from(
 );
 
 /* =========================================================
-   2. ESTADO DA APLICAÇÃO
+   2. ESTADO
 ========================================================= */
 
 let availableYears = [...allYears];
 
+let displayYears = [...availableYears];
+
 let rotation = 0;
+
 let spinning = false;
+
 let spinCount = 0;
 
 /* =========================================================
-   3. ELEMENTOS DO DOM
+   3. ELEMENTOS DA ROLETA
 ========================================================= */
 
 const canvas = document.getElementById("wheel");
+
 const ctx = canvas.getContext("2d");
 
 const spinButton = document.getElementById("spinButton");
@@ -45,7 +49,31 @@ const spinsElement = document.getElementById("spins");
 const historyList = document.getElementById("historyList");
 
 /* =========================================================
-   4. ELEMENTOS DE AUTENTICAÇÃO
+   4. ELEMENTOS DO FILME
+========================================================= */
+
+const movieInfo = document.getElementById("movieInfo");
+
+const movieTitle = document.getElementById("movieTitle");
+
+const movieOriginalTitle = document.getElementById("movieOriginalTitle");
+
+const movieReleaseYear = document.getElementById("movieReleaseYear");
+
+const movieRuntime = document.getElementById("movieRuntime");
+
+const movieGenres = document.getElementById("movieGenres");
+
+const movieRating = document.getElementById("movieRating");
+
+const movieVotes = document.getElementById("movieVotes");
+
+const movieDirector = document.getElementById("movieDirector");
+
+const movieOverview = document.getElementById("movieOverview");
+
+/* =========================================================
+   5. AUTENTICAÇÃO
 ========================================================= */
 
 const authScreen = document.getElementById("authScreen");
@@ -63,7 +91,7 @@ const authMessage = document.getElementById("authMessage");
 const loginButton = document.getElementById("loginButton");
 
 /* =========================================================
-   5. CORES DA ROLETA
+   6. CORES DA ROLETA
 ========================================================= */
 
 const colors = [
@@ -78,7 +106,7 @@ const colors = [
 ];
 
 /* =========================================================
-   6. CANVAS
+   7. REDIMENSIONAR CANVAS
 ========================================================= */
 
 function resizeCanvas() {
@@ -96,7 +124,7 @@ function resizeCanvas() {
 }
 
 /* =========================================================
-   7. DESENHAR ROLETA
+   8. DESENHAR ROLETA
 ========================================================= */
 
 function drawWheel() {
@@ -113,8 +141,8 @@ function drawWheel() {
   ctx.clearRect(0, 0, width, height);
 
   /* -----------------------------------------
-     BORDA EXTERNA
-  ----------------------------------------- */
+       BORDA EXTERNA
+    ----------------------------------------- */
 
   ctx.beginPath();
 
@@ -131,8 +159,8 @@ function drawWheel() {
   ctx.stroke();
 
   /* -----------------------------------------
-     TODOS OS ANOS FORAM SORTEADOS
-  ----------------------------------------- */
+       SEM ANOS
+    ----------------------------------------- */
 
   if (availableYears.length === 0) {
     ctx.beginPath();
@@ -157,20 +185,27 @@ function drawWheel() {
   }
 
   /* -----------------------------------------
-     CONFIGURAÇÃO DAS FATIAS
-  ----------------------------------------- */
+       CONFIGURAÇÃO
+    ----------------------------------------- */
 
   const years = displayYears.length;
+
   const slice = (Math.PI * 2) / years;
 
+  const isMobile = window.innerWidth <= 600;
+
   /* -----------------------------------------
-     DESENHAR FATIAS
-  ----------------------------------------- */
+       FATIAS
+    ----------------------------------------- */
 
   for (let i = 0; i < years; i++) {
     const startAngle = -Math.PI / 2 + i * slice + rotation;
 
     const endAngle = startAngle + slice;
+
+    /* -------------------------------------
+           FATIA
+        ------------------------------------- */
 
     ctx.beginPath();
 
@@ -180,13 +215,13 @@ function drawWheel() {
 
     ctx.closePath();
 
-    /* Cor */
-
     ctx.fillStyle = colors[i % colors.length];
 
     ctx.fill();
 
-    /* Divisória */
+    /* -------------------------------------
+           DIVISÓRIA
+        ------------------------------------- */
 
     ctx.lineWidth = 1.5;
 
@@ -194,9 +229,32 @@ function drawWheel() {
 
     ctx.stroke();
 
-    /* -----------------------------------------
-       TEXTO
-    ----------------------------------------- */
+    /* -------------------------------------
+           TEXTO
+           
+           Desktop:
+           todos os anos.
+
+           Mobile:
+           somente alguns anos.
+        ------------------------------------- */
+
+    let showYear = true;
+
+    if (isMobile) {
+      /*
+       * 47 anos são muitas informações
+       * para uma roleta pequena.
+       *
+       * Mostramos 1 a cada 3.
+       */
+
+      showYear = i % 3 === 0;
+    }
+
+    if (!showYear) {
+      continue;
+    }
 
     const textAngle = startAngle + slice / 2;
 
@@ -212,14 +270,18 @@ function drawWheel() {
 
     ctx.rotate(textAngle + Math.PI / 2);
 
+    /* -------------------------------------
+           TAMANHO DA FONTE
+        ------------------------------------- */
+
     let fontSize = 15;
 
     if (years > 40) {
       fontSize = 11;
     }
 
-    if (years > 44) {
-      fontSize = 10;
+    if (isMobile) {
+      fontSize = 9;
     }
 
     ctx.font = `bold ${fontSize}px Arial`;
@@ -235,12 +297,13 @@ function drawWheel() {
     ctx.shadowBlur = 3;
 
     ctx.fillText(displayYears[i], 0, 0);
+
     ctx.restore();
   }
 
   /* -----------------------------------------
-     CÍRCULO CENTRAL
-  ----------------------------------------- */
+       CÍRCULO CENTRAL
+    ----------------------------------------- */
 
   ctx.beginPath();
 
@@ -256,8 +319,9 @@ function drawWheel() {
 
   ctx.stroke();
 }
+
 /* =========================================================
-   8. ANIMAÇÃO
+   9. EASING
 ========================================================= */
 
 function easeOutCubic(t) {
@@ -265,11 +329,168 @@ function easeOutCubic(t) {
 }
 
 /* =========================================================
-   9. GIRAR ROLETA
+   10. BUSCAR FILME NO SUPABASE
 ========================================================= */
 
+async function getOscarMovie(year) {
+  const { data, error } = await supabaseClient
+    .from("oscars_years")
+    .select(
+      `
+            year,
+            winner_title,
+            imdb_id,
+            original_title,
+            release_year,
+            runtime_minutes,
+            genres,
+            director,
+            imdb_rating,
+            imdb_votes,
+            overview,
+            poster_url,
+            metacritic_score,
+            rotten_tomatoes_score,
+            critic_summary
+        `,
+    )
+    .eq("year", year)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data) {
+    throw new Error(`Nenhum filme encontrado para o ano ${year}.`);
+  }
+
+  return data;
+}
+
 /* =========================================================
-   GIRAR ROLETA
+   11. MOSTRAR FILME
+========================================================= */
+
+function displayOscarMovie(movie) {
+  if (!movieInfo) {
+    return;
+  }
+
+  movieInfo.style.display = "grid";
+
+  /* -----------------------------------------
+       TÍTULO
+    ----------------------------------------- */
+
+  if (movieTitle) {
+    movieTitle.textContent = movie.winner_title || "Título não informado";
+  }
+
+  /* -----------------------------------------
+       TÍTULO ORIGINAL
+    ----------------------------------------- */
+
+  if (movieOriginalTitle) {
+    if (movie.original_title && movie.original_title !== movie.winner_title) {
+      movieOriginalTitle.textContent = movie.original_title;
+    } else {
+      movieOriginalTitle.textContent = "";
+    }
+  }
+
+  /* -----------------------------------------
+       ANO DE LANÇAMENTO
+    ----------------------------------------- */
+
+  if (movieReleaseYear) {
+    movieReleaseYear.textContent = movie.release_year || "Ano desconhecido";
+  }
+
+  /* -----------------------------------------
+       DURAÇÃO
+    ----------------------------------------- */
+
+  if (movieRuntime) {
+    movieRuntime.textContent = movie.runtime_minutes
+      ? `${movie.runtime_minutes} min`
+      : "Duração não informada";
+  }
+
+  /* -----------------------------------------
+       GÊNEROS
+    ----------------------------------------- */
+
+  if (movieGenres) {
+    movieGenres.innerHTML = "";
+
+    const genres = movie.genres
+      ? movie.genres
+          .split(",")
+          .map((genre) => genre.trim())
+          .filter(Boolean)
+      : [];
+
+    genres.forEach((genre) => {
+      const element = document.createElement("span");
+
+      element.className = "movie-info__genre";
+
+      element.textContent = genre;
+
+      movieGenres.appendChild(element);
+    });
+  }
+
+  /* -----------------------------------------
+       NOTA IMDb
+    ----------------------------------------- */
+
+  if (movieRating) {
+    movieRating.textContent = movie.imdb_rating
+      ? `${Number(movie.imdb_rating).toFixed(1)}/10`
+      : "—";
+  }
+
+  /* -----------------------------------------
+       VOTOS IMDb
+    ----------------------------------------- */
+
+  if (movieVotes) {
+    movieVotes.textContent = movie.imdb_votes
+      ? Number(movie.imdb_votes).toLocaleString("pt-BR")
+      : "—";
+  }
+
+  /* -----------------------------------------
+       DIRETOR
+    ----------------------------------------- */
+
+  if (movieDirector) {
+    movieDirector.textContent = movie.director || "Não informado";
+  }
+
+  /* -----------------------------------------
+       SINOPSE
+    ----------------------------------------- */
+
+  if (movieOverview) {
+    movieOverview.textContent = movie.overview || "Sinopse não disponível.";
+  }
+}
+
+/* =========================================================
+   12. ESCONDER FILME
+========================================================= */
+
+function hideOscarMovie() {
+  if (movieInfo) {
+    movieInfo.style.display = "none";
+  }
+}
+
+/* =========================================================
+   13. GIRAR ROLETA
 ========================================================= */
 
 function spin() {
@@ -280,56 +501,35 @@ function spin() {
   spinning = true;
 
   spinButton.disabled = true;
+
   resetButton.disabled = true;
 
-  // A roleta deve usar exatamente os mesmos anos
-  // usados no sorteio.
   displayYears = [...availableYears];
 
   drawWheel();
 
-  // Sorteia o índice e o ano
+  /* -----------------------------------------
+       ESCOLHER VENCEDOR
+    ----------------------------------------- */
+
   const winnerIndex = Math.floor(Math.random() * displayYears.length);
 
-  const winner = displayYears[winnerIndex];
-
-  // Quantidade de graus/radianos de cada fatia
   const slice = (Math.PI * 2) / displayYears.length;
 
-  // O ponteiro está no topo
   const pointerAngle = -Math.PI / 2;
 
-  /*
-   * Centro da fatia vencedora SEM considerar a rotação.
-   *
-   * A roleta começa no topo (-PI/2).
-   */
   const winnerCenterAngle = pointerAngle + winnerIndex * slice + slice / 2;
 
-  /*
-   * Queremos que o centro da fatia vencedora
-   * fique exatamente no ponteiro.
-   */
   const targetRotation = pointerAngle - winnerCenterAngle;
 
-  /*
-   * Normaliza a rotação atual para 0..2PI.
-   */
   const currentRotation =
     ((rotation % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
 
-  /*
-   * Calcula quanto precisamos girar para chegar
-   * exatamente à posição vencedora.
-   */
   let rotationDifference = targetRotation - currentRotation;
 
   rotationDifference =
     ((rotationDifference % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
 
-  /*
-   * Faz várias voltas antes de parar.
-   */
   const extraTurns = 7 + Math.floor(Math.random() * 4);
 
   const finalRotation =
@@ -338,7 +538,12 @@ function spin() {
   const duration = 5500 + Math.random() * 1800;
 
   const startRotation = rotation;
+
   const startTime = performance.now();
+
+  /* -----------------------------------------
+       ANIMAÇÃO
+    ----------------------------------------- */
 
   function animate(currentTime) {
     const elapsed = currentTime - startTime;
@@ -353,10 +558,10 @@ function spin() {
 
     if (progress < 1) {
       requestAnimationFrame(animate);
+
       return;
     }
 
-    // Garante a posição final exata
     rotation = finalRotation;
 
     drawWheel();
@@ -368,35 +573,53 @@ function spin() {
 }
 
 /* =========================================================
-   10. FINALIZAR GIRO
+   14. FINALIZAR GIRO
 ========================================================= */
 
 async function finishSpin(winnerIndex) {
   const winner = availableYears[winnerIndex];
 
   try {
+    /* -------------------------------------
+           SALVAR SORTEIO
+        ------------------------------------- */
+
     await saveSpin(winner);
+
+    /* -------------------------------------
+           BUSCAR FILME
+        ------------------------------------- */
+
+    const movie = await getOscarMovie(winner);
+
+    /* -------------------------------------
+           MOSTRAR FILME
+        ------------------------------------- */
+
+    displayOscarMovie(movie);
   } catch (error) {
-    console.error("Erro ao salvar sorteio:", error);
+    console.error("Erro ao carregar o filme:", error);
 
-    alert("Não foi possível salvar o sorteio. Tente novamente.");
-
-    spinning = false;
-
-    spinButton.disabled = false;
-
-    resetButton.disabled = false;
-
-    return;
+    hideOscarMovie();
   }
 
-  /* Remove o ano */
+  /* -----------------------------------------
+       REMOVER ANO
+    ----------------------------------------- */
 
   availableYears.splice(winnerIndex, 1);
+
   displayYears = [...availableYears];
+
+  /* -----------------------------------------
+       CONTADOR
+    ----------------------------------------- */
+
   spinCount++;
 
-  /* Resultado */
+  /* -----------------------------------------
+       RESULTADO
+    ----------------------------------------- */
 
   resultElement.textContent = winner;
 
@@ -406,19 +629,27 @@ async function finishSpin(winnerIndex) {
 
   resultElement.classList.add("animate");
 
-  /* Estatísticas */
+  /* -----------------------------------------
+       ESTATÍSTICAS
+    ----------------------------------------- */
 
   updateStats();
 
-  /* Histórico */
+  /* -----------------------------------------
+       HISTÓRICO
+    ----------------------------------------- */
 
   addHistory(winner);
 
-  /* Confetes */
+  /* -----------------------------------------
+       CONFETES
+    ----------------------------------------- */
 
   createConfetti();
 
-  /* Libera controles */
+  /* -----------------------------------------
+       LIBERAR CONTROLES
+    ----------------------------------------- */
 
   spinning = false;
 
@@ -426,12 +657,15 @@ async function finishSpin(winnerIndex) {
 
   resetButton.disabled = false;
 
-  /* Redesenha */
+  /* -----------------------------------------
+       REDESENHAR
+    ----------------------------------------- */
 
   drawWheel();
 }
+
 /* =========================================================
-   11. ESTATÍSTICAS
+   15. ESTATÍSTICAS
 ========================================================= */
 
 function updateStats() {
@@ -441,7 +675,7 @@ function updateStats() {
 }
 
 /* =========================================================
-   12. HISTÓRICO
+   16. HISTÓRICO
 ========================================================= */
 
 function addHistory(year) {
@@ -455,7 +689,7 @@ function addHistory(year) {
 }
 
 /* =========================================================
-   13. CONFETES
+   17. CONFETES
 ========================================================= */
 
 function createConfetti() {
@@ -484,7 +718,7 @@ function createConfetti() {
 }
 
 /* =========================================================
-   14. RESETAR ROLETA
+   18. RESET
 ========================================================= */
 
 async function reset() {
@@ -514,27 +748,47 @@ async function reset() {
       throw error;
     }
 
-    /* Restaura anos */
+    /* -------------------------------------
+           RESTAURAR ANOS
+        ------------------------------------- */
 
     availableYears = [...allYears];
 
-    /* Reseta rotação */
+    displayYears = [...availableYears];
+
+    /* -------------------------------------
+           ROTATION
+        ------------------------------------- */
 
     rotation = 0;
 
-    /* Reseta contador */
+    /* -------------------------------------
+           CONTADOR
+        ------------------------------------- */
 
     spinCount = 0;
 
-    /* Limpa resultado */
+    /* -------------------------------------
+           RESULTADO
+        ------------------------------------- */
 
     resultElement.textContent = "—";
 
-    /* Limpa histórico */
+    /* -------------------------------------
+           FILME
+        ------------------------------------- */
+
+    hideOscarMovie();
+
+    /* -------------------------------------
+           HISTÓRICO
+        ------------------------------------- */
 
     historyList.innerHTML = "";
 
-    /* Atualiza interface */
+    /* -------------------------------------
+           ATUALIZAR
+        ------------------------------------- */
 
     updateStats();
 
@@ -549,9 +803,9 @@ async function reset() {
     spinButton.disabled = false;
   }
 }
+
 /* =========================================================
-   15. SUPABASE
-   CARREGAR DADOS DO USUÁRIO
+   19. CARREGAR DADOS DO USUÁRIO
 ========================================================= */
 
 async function loadUserData() {
@@ -565,21 +819,17 @@ async function loadUserData() {
     return;
   }
 
-  /* -----------------------------------------
-     BUSCAR SORTEIOS
-  ----------------------------------------- */
-
   const { data: spins, error } = await supabaseClient
     .from("user_spins")
     .select(
       `
-          id,
-          created_at,
-          year_id,
-          oscars_years (
-            year
-          )
-        `,
+                id,
+                created_at,
+                year_id,
+                oscars_years (
+                    year
+                )
+            `,
     )
     .eq("user_id", user.id)
     .order("created_at", {
@@ -595,29 +845,30 @@ async function loadUserData() {
   const userSpins = spins ?? [];
 
   /* -----------------------------------------
-     ANOS JÁ SORTEADOS
-  ----------------------------------------- */
+       ANOS SORTEADOS
+    ----------------------------------------- */
 
   const drawnYears = userSpins
     .map((spin) => spin.oscars_years?.year)
     .filter((year) => typeof year === "number");
 
   /* -----------------------------------------
-     REMOVER ANOS DA ROLETA
-  ----------------------------------------- */
+       REMOVER ANOS
+    ----------------------------------------- */
 
   availableYears = allYears.filter((year) => !drawnYears.includes(year));
 
   displayYears = [...availableYears];
+
   /* -----------------------------------------
-     CONTADOR
-  ----------------------------------------- */
+       GIROS
+    ----------------------------------------- */
 
   spinCount = userSpins.length;
 
   /* -----------------------------------------
-     HISTÓRICO
-  ----------------------------------------- */
+       HISTÓRICO
+    ----------------------------------------- */
 
   historyList.innerHTML = "";
 
@@ -630,8 +881,8 @@ async function loadUserData() {
   });
 
   /* -----------------------------------------
-     ATUALIZAR INTERFACE
-  ----------------------------------------- */
+       ATUALIZAR
+    ----------------------------------------- */
 
   updateStats();
 
@@ -639,14 +890,15 @@ async function loadUserData() {
 
   console.log("Dados do usuário carregados:", {
     userId: user.id,
+
     spins: userSpins,
+
     availableYears,
   });
 }
 
 /* =========================================================
-   16. SUPABASE
-   SALVAR SORTEIO
+   20. SALVAR SORTEIO
 ========================================================= */
 
 async function saveSpin(year) {
@@ -659,8 +911,8 @@ async function saveSpin(year) {
   }
 
   /* -----------------------------------------
-     BUSCAR ID DO ANO
-  ----------------------------------------- */
+       BUSCAR ID DO ANO
+    ----------------------------------------- */
 
   const { data: yearData, error: yearError } = await supabaseClient
     .from("oscars_years")
@@ -673,8 +925,8 @@ async function saveSpin(year) {
   }
 
   /* -----------------------------------------
-     SALVAR SORTEIO
-  ----------------------------------------- */
+       SALVAR
+    ----------------------------------------- */
 
   const { error: spinError } = await supabaseClient.from("user_spins").insert({
     user_id: user.id,
@@ -688,9 +940,9 @@ async function saveSpin(year) {
 
   console.log("Sorteio salvo:", year);
 }
+
 /* =========================================================
-   17. AUTENTICAÇÃO
-   CONTROLE DAS TELAS
+   21. TELA DE LOGIN
 ========================================================= */
 
 function showAuthScreen() {
@@ -699,28 +951,30 @@ function showAuthScreen() {
   app.style.display = "none";
 }
 
+/* =========================================================
+   22. TELA DA APLICAÇÃO
+========================================================= */
+
 function showApp() {
   authScreen.style.display = "none";
 
   app.style.display = "flex";
-
-  /*
-   * Agora que a roleta está visível,
-   * calculamos o tamanho correto do canvas.
-   */
 
   requestAnimationFrame(() => {
     resizeCanvas();
   });
 }
 
+/* =========================================================
+   23. MENSAGEM DE AUTENTICAÇÃO
+========================================================= */
+
 function showAuthMessage(message) {
   authMessage.textContent = message;
 }
 
 /* =========================================================
-   18. AUTENTICAÇÃO
-   VERIFICAR SESSÃO
+   24. VERIFICAR AUTENTICAÇÃO
 ========================================================= */
 
 async function checkAuth() {
@@ -740,8 +994,7 @@ async function checkAuth() {
 }
 
 /* =========================================================
-   19. AUTENTICAÇÃO
-   LOGIN
+   25. LOGIN
 ========================================================= */
 
 authForm.addEventListener("submit", async (event) => {
@@ -778,16 +1031,13 @@ authForm.addEventListener("submit", async (event) => {
 });
 
 /* =========================================================
-   20. AUTENTICAÇÃO
-   CADASTRO
+   26. CADASTRO
 ========================================================= */
 
 registerButton.addEventListener("click", async () => {
   const email = document.getElementById("email").value.trim();
 
   const password = document.getElementById("password").value;
-
-  /* Validação */
 
   if (!email || !password) {
     showAuthMessage("Informe e-mail e senha.");
@@ -805,14 +1055,10 @@ registerButton.addEventListener("click", async () => {
 
   showAuthMessage("Criando conta...");
 
-  /* Cadastro */
-
   const { data, error } = await supabaseClient.auth.signUp({
     email,
     password,
   });
-
-  /* Erro */
 
   if (error) {
     showAuthMessage(error.message);
@@ -821,8 +1067,6 @@ registerButton.addEventListener("click", async () => {
 
     return;
   }
-
-  /* Cadastro com sessão */
 
   if (data.session) {
     showAuthMessage("");
@@ -836,9 +1080,9 @@ registerButton.addEventListener("click", async () => {
 
   registerButton.disabled = false;
 });
+
 /* =========================================================
-   21. AUTENTICAÇÃO
-   LOGOUT
+   27. LOGOUT
 ========================================================= */
 
 logoutButton.addEventListener("click", async () => {
@@ -848,18 +1092,10 @@ logoutButton.addEventListener("click", async () => {
 });
 
 /* =========================================================
-   22. AUTENTICAÇÃO
-   OBSERVAR SESSÃO
+   28. OBSERVAR SESSÃO
 ========================================================= */
 
 supabaseClient.auth.onAuthStateChange((event, session) => {
-  /*
-   * O carregamento dos dados acontece
-   * no login e no checkAuth().
-   *
-   * Aqui apenas alternamos as telas.
-   */
-
   if (session) {
     showApp();
   } else {
@@ -868,7 +1104,7 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
 });
 
 /* =========================================================
-   23. EVENTOS DA ROLETA
+   29. EVENTOS
 ========================================================= */
 
 spinButton.addEventListener("click", spin);
@@ -878,7 +1114,7 @@ resetButton.addEventListener("click", reset);
 window.addEventListener("resize", resizeCanvas);
 
 /* =========================================================
-   24. TECLADO
+   30. TECLADO
 ========================================================= */
 
 document.addEventListener("keydown", (event) => {
@@ -890,7 +1126,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 /* =========================================================
-   25. INICIALIZAÇÃO
+   31. INICIALIZAÇÃO
 ========================================================= */
 
 updateStats();
