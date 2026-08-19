@@ -1599,18 +1599,94 @@ body {
    HISTÓRICO
 ========================================================= */
 
+.history {
+    margin-top: 20px;
+}
+
+
+/* Título */
+
+.history__title {
+    margin-bottom: 10px;
+
+    color: #aaa;
+
+    font-size: 11px;
+
+    font-weight: 400;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+}
+
+
+/* Área dos anos */
+
 .history__list {
-    max-height: 180px;
 
-    display: flex;
+    /*
+     * Altura máxima.
+     * O painel não cresce indefinidamente.
+     */
+    max-height: 150px;
 
-    flex-wrap: wrap;
+    overflow-y: auto;
 
-    align-items: center;
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
 
     gap: 8px;
 
-    overflow-y: auto;
+    padding-right: 5px;
+
+    align-content: start;
+}
+
+
+/* =========================================================
+   SCROLLBAR DO HISTÓRICO
+========================================================= */
+
+.history__list::-webkit-scrollbar {
+    width: 5px;
+}
+
+
+.history__list::-webkit-scrollbar-track {
+
+    background:
+        rgba(255, 255, 255, 0.03);
+
+    border-radius: 10px;
+}
+
+
+.history__list::-webkit-scrollbar-thumb {
+
+    background:
+        rgba(212, 175, 55, 0.45);
+
+    border-radius: 10px;
+}
+
+
+.history__list::-webkit-scrollbar-thumb:hover {
+
+    background:
+        rgba(212, 175, 55, 0.7);
+}
+
+
+/* Firefox */
+
+.history__list {
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        rgba(212, 175, 55, 0.45) rgba(255, 255, 255, 0.03);
 }
 
 
@@ -1620,11 +1696,13 @@ body {
 
 .history__item {
 
-    display: inline-flex;
+    display: flex;
 
     align-items: center;
 
     gap: 5px;
+
+    min-width: 0;
 
     margin: 0;
 
@@ -1650,44 +1728,38 @@ body {
 
     height: 19px;
 
-    flex-shrink: 0;
-
-    margin: 0;
+    flex: 0 0 19px;
 
     position: relative;
 
+    margin: 0;
+
     cursor: pointer;
 
-    background: #151515;
+    background:
+        #151515;
 
-    border: 1px solid rgba(212, 175, 55, 0.45);
+    border:
+        1px solid rgba(212, 175, 55, 0.45);
 
     border-radius: 5px;
 
     transition:
         background 0.2s ease,
         border-color 0.2s ease,
-        transform 0.15s ease,
-        box-shadow 0.2s ease;
+        transform 0.15s ease;
 }
 
-
-/* Hover */
 
 .history__checkbox:hover {
 
     border-color:
         #d4af37;
 
-    background:
-        rgba(212, 175, 55, 0.08);
-
     transform:
         scale(1.05);
 }
 
-
-/* Checked */
 
 .history__checkbox:checked {
 
@@ -1696,13 +1768,8 @@ body {
 
     border-color:
         #d4af37;
-
-    box-shadow:
-        0 0 8px rgba(212, 175, 55, 0.25);
 }
 
-
-/* Check */
 
 .history__checkbox:checked::after {
 
@@ -1724,18 +1791,6 @@ body {
     font-size: 12px;
 
     font-weight: 900;
-
-    line-height: 1;
-}
-
-
-/* Desabilitado */
-
-.history__checkbox:disabled {
-
-    opacity: 0.5;
-
-    cursor: wait;
 }
 
 
@@ -1745,24 +1800,21 @@ body {
 
 .history__year {
 
-    appearance: none;
+    min-width: 0;
 
-    -webkit-appearance: none;
+    padding:
+        7px 12px;
 
     border:
         1px solid rgba(212, 175, 55, 0.35);
+
+    border-radius: 18px;
 
     background:
         rgba(212, 175, 55, 0.08);
 
     color:
         #d4af37;
-
-    padding:
-        7px 13px;
-
-    border-radius:
-        18px;
 
     font-family:
         inherit;
@@ -1787,8 +1839,6 @@ body {
 }
 
 
-/* Hover */
-
 .history__year:hover {
 
     background:
@@ -1805,41 +1855,9 @@ body {
 }
 
 
-/* Clique */
-
-.history__year:active {
-
-    transform:
-        translateY(0);
-
-    background:
-        rgba(212, 175, 55, 0.25);
-}
-
-
-/* Carregando */
-
-.history__year:disabled {
-
-    opacity:
-        0.55;
-
-    cursor:
-        wait;
-
-    transform:
-        none;
-}
-
-
 /* =========================================================
-   FILME ASSISTIDO
+   ASSISTIDO
 ========================================================= */
-
-/*
- * Quando o filme já foi assistido,
- * o ano fica mais discreto.
- */
 
 .history__item:has(.history__checkbox:checked) .history__year {
 
@@ -1854,106 +1872,49 @@ body {
 }
 
 
-/*
- * Mantém o hover funcionando mesmo
- * para filmes assistidos.
- */
-
-.history__item:has(.history__checkbox:checked) .history__year:hover {
-
-    color:
-        #d4af37;
-
-    background:
-        rgba(212, 175, 55, 0.12);
-
-    border-color:
-        rgba(212, 175, 55, 0.5);
-}
-
-
-/* =========================================================
-   ESTATÍSTICAS
-========================================================= */
-
-.stats {
-
-    grid-template-columns:
-        repeat(3, 1fr);
-}
-
-
 /* =========================================================
    MOBILE
 ========================================================= */
 
 @media (max-width: 600px) {
 
-    .stats {
-
-        grid-template-columns:
-            repeat(3, 1fr);
-
-        gap:
-            7px;
-    }
-
-
-    .stat {
-
-        padding:
-            10px 5px;
-    }
-
-
-    .stat__value {
-
-        font-size:
-            20px;
-    }
-
-
-    .stat__label {
-
-        font-size:
-            9px;
-
-        line-height:
-            1.2;
-    }
-
-
     .history__list {
 
-        gap:
-            9px;
+        /*
+         * Um pouco maior no celular,
+         * mas ainda limitado.
+         */
+        max-height: 180px;
 
-        max-height:
-            200px;
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 8px;
+
+        padding-right: 4px;
     }
 
 
     .history__item {
 
-        gap:
-            5px;
+        gap: 5px;
     }
 
 
     .history__checkbox {
 
-        width:
-            18px;
+        width: 18px;
 
-        height:
-            18px;
+        height: 18px;
+
+        flex-basis: 18px;
     }
 
 
     .history__year {
 
         padding:
-            7px 11px;
+            7px 10px;
 
         font-size:
             11px;
