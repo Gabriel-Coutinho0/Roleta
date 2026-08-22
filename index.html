@@ -1,466 +1,429 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Roleta dos Oscars</title>
 
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
 
-</head>
-
-
-<body>
-
-
-    <!-- ==========================
+  <body>
+    <!-- =====================================================
          AUTENTICAÇÃO
-    =========================== -->
+    ====================================================== -->
 
     <section id="authScreen" class="auth-screen">
+      <div class="auth-card">
+        <span class="auth-card__eyebrow"> ACADEMY AWARDS </span>
 
-        <div class="auth-card">
+        <h1 class="auth-card__title">Roleta dos Oscars</h1>
 
+        <p class="auth-card__subtitle">Entre para salvar seus sorteios</p>
 
-            <span class="auth-card__eyebrow">
-                ACADEMY AWARDS
-            </span>
+        <form id="authForm">
+          <div class="form-group">
+            <label for="email"> E-mail </label>
 
+            <input
+              id="email"
+              type="email"
+              placeholder="seu@email.com"
+              required
+            />
+          </div>
 
-            <h1 class="auth-card__title">
-                Roleta dos Oscars
-            </h1>
+          <div class="form-group">
+            <label for="password"> Senha </label>
 
+            <input
+              id="password"
+              type="password"
+              placeholder="Sua senha"
+              minlength="6"
+              required
+            />
+          </div>
 
-            <p class="auth-card__subtitle">
-                Entre para salvar seus sorteios
-            </p>
+          <button id="loginButton" type="submit" class="button button--primary">
+            Entrar
+          </button>
+        </form>
 
+        <button id="registerButton" type="button" class="auth-register">
+          Criar uma conta
+        </button>
 
-            <form id="authForm">
-
-
-                <div class="form-group">
-
-                    <label for="email">
-                        E-mail
-                    </label>
-
-
-                    <input id="email" type="email" placeholder="seu@email.com" required>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="password">
-                        Senha
-                    </label>
-
-
-                    <input id="password" type="password" placeholder="Sua senha" minlength="6" required>
-
-                </div>
-
-
-                <button id="loginButton" type="submit" class="button button--primary">
-                    Entrar
-                </button>
-
-
-            </form>
-
-
-            <button id="registerButton" type="button" class="auth-register">
-                Criar uma conta
-            </button>
-
-
-            <p id="authMessage" class="auth-message"></p>
-
-
-        </div>
-
+        <p id="authMessage" class="auth-message"></p>
+      </div>
     </section>
 
-
-
-    <!-- ==========================
+    <!-- =====================================================
          APLICAÇÃO
-    =========================== -->
+    ====================================================== -->
 
-    <main id="app" class="app" style="display: none;">
-
-
-        <!-- ==========================
+    <main id="app" class="app" style="display: none">
+      <!-- =================================================
              HEADER
-        =========================== -->
+        ================================================== -->
 
-        <header class="header">
+      <header class="header">
+        <div class="header__top">
+          <div>
+            <span class="header__eyebrow"> ACADEMY AWARDS </span>
 
+            <h1 class="header__title">Roleta dos Oscars</h1>
 
-            <div class="header__top">
+            <p class="header__subtitle">
+              Sorteie um ano do Oscar entre 1980 e 2026
+            </p>
+          </div>
 
+          <button id="logoutButton" type="button" class="logout-button">
+            Sair
+          </button>
+        </div>
+      </header>
 
-                <div>
-
-                    <span class="header__eyebrow">
-                        ACADEMY AWARDS
-                    </span>
-
-
-                    <h1 class="header__title">
-                        Roleta dos Oscars
-                    </h1>
-
-
-                    <p class="header__subtitle">
-                        Sorteie um ano do Oscar entre 1980 e 2026
-                    </p>
-
-                </div>
-
-
-                <button id="logoutButton" type="button" class="logout-button">
-                    Sair
-                </button>
-
-
-            </div>
-
-
-        </header>
-
-
-
-        <!-- ==========================
+      <!-- =================================================
              JOGO
-        =========================== -->
+        ================================================== -->
 
-        <section class="game">
-
-
-            <!-- ==========================
+      <section class="game">
+        <!-- =============================================
                  ROLETA
-            =========================== -->
+            ============================================== -->
 
-            <div class="wheel-container">
+        <div class="wheel-container">
+          <div class="wheel-wrapper">
+            <div class="wheel-pointer"></div>
 
+            <canvas id="wheel" class="wheel"></canvas>
+          </div>
+        </div>
 
-                <div class="wheel-wrapper">
-
-
-                    <div class="wheel-pointer"></div>
-
-
-                    <canvas id="wheel" class="wheel"></canvas>
-
-
-                    <div class="wheel-center">
-
-                        <span>
-                            OSCARS
-                        </span>
-
-                    </div>
-
-
-                </div>
-
-
-            </div>
-
-
-
-            <!-- ==========================
+        <!-- =============================================
                  PAINEL
-            =========================== -->
+            ============================================== -->
 
-            <aside class="panel">
+        <aside class="panel">
+          <!-- =========================================
+                     RESULTADO
+                ========================================== -->
 
+          <div class="result">
+            <span class="result__label"> ANO SORTEADO </span>
 
-                <!-- RESULTADO -->
+            <strong id="result" class="result__year"> — </strong>
+          </div>
 
-                <div class="result">
+          <!-- =========================================
+                     BOTÃO GIRAR
+                ========================================== -->
 
+          <button id="spinButton" class="button button--primary" type="button">
+            GIRAR A ROLETA
+          </button>
 
-                    <span class="result__label">
-                        ANO SORTEADO
-                    </span>
+          <!-- =========================================
+                     BOTÃO RESET
+                ========================================== -->
 
+          <button
+            id="resetButton"
+            class="button button--secondary"
+            type="button"
+          >
+            Restaurar anos
+          </button>
 
-                    <strong id="result" class="result__year">
-                        —
-                    </strong>
+          <!-- =========================================
+                     ESTATÍSTICAS
+                ========================================== -->
 
+          <div class="stats">
+            <div class="stat">
+              <strong id="remaining" class="stat__value"> 47 </strong>
 
-                </div>
+              <span class="stat__label"> Disponíveis </span>
+            </div>
 
+            <div class="stat">
+              <strong id="spins" class="stat__value"> 0 </strong>
 
+              <span class="stat__label"> Giros </span>
+            </div>
 
-                <!-- BOTÃO GIRAR -->
+            <div class="stat">
+              <strong id="watched" class="stat__value"> 0 </strong>
 
-                <button id="spinButton" class="button button--primary" type="button">
-                    GIRAR A ROLETA
-                </button>
+              <span class="stat__label"> Assistidos </span>
+            </div>
+          </div>
 
+          <!-- =========================================
+                     HISTÓRICO
+                ========================================== -->
 
+          <div class="history">
+            <h2 class="history__title">Histórico</h2>
 
-                <!-- BOTÃO RESET -->
+            <div id="historyList" class="history__list"></div>
+          </div>
+        </aside>
+      </section>
 
-                <button id="resetButton" class="button button--secondary" type="button">
-                    Restaurar anos
-                </button>
-
-
-
-                <!-- ESTATÍSTICAS -->
-
-                <div class="stats">
-
-                    <div class="stat">
-
-                        <strong id="remaining" class="stat__value">
-                            47
-                        </strong>
-
-                        <span class="stat__label">
-                            Disponíveis
-                        </span>
-
-                    </div>
-
-
-                    <div class="stat">
-
-                        <strong id="spins" class="stat__value">
-                            0
-                        </strong>
-
-                        <span class="stat__label">
-                            Giros
-                        </span>
-
-                    </div>
-
-
-                    <div class="stat">
-
-                        <strong id="watched" class="stat__value">
-                            0
-                        </strong>
-
-                        <span class="stat__label">
-                            Assistidos
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- HISTÓRICO -->
-
-                <div class="history">
-
-
-                    <h2 class="history__title">
-                        Histórico
-                    </h2>
-
-
-                    <div id="historyList" class="history__list"></div>
-
-
-                </div>
-
-
-            </aside>
-
-
-        </section>
-
-
-
-        <!-- ==========================
+      <!-- =================================================
              INFORMAÇÕES DO FILME
-        =========================== -->
+        ================================================== -->
 
-        <section id="movieInfo" class="movie-info" style="display: none;">
+      <section id="movieInfo" class="movie-info" style="display: none">
+        <!-- =============================================
+                 POSTER
+            ============================================== -->
+        <div class="movie-info__poster">
+          <img
+            id="moviePoster"
+            class="movie-info__poster-image"
+            alt="Poster do filme"
+          />
+        </div>
 
+        <!-- =============================================
+                 CONTEÚDO
+            ============================================== -->
 
-            <!-- POSTER -->
+        <div class="movie-info__content">
+          <!-- =========================================
+                     CATEGORIA
+                ========================================== -->
 
-            <div class="movie-info__poster">
+          <span class="movie-info__eyebrow"> MELHOR FILME </span>
 
+          <!-- =========================================
+                     TÍTULO
+                ========================================== -->
 
-                <div class="movie-info__poster-placeholder">
-                    OSCARS
-                </div>
+          <h2 id="movieTitle" class="movie-info__title">—</h2>
 
+          <!-- =========================================
+                     TÍTULO ORIGINAL
+                ========================================== -->
 
+          <p id="movieOriginalTitle" class="movie-info__original-title"></p>
+
+          <!-- =========================================
+                     ANO E DURAÇÃO
+                ========================================== -->
+
+          <div class="movie-info__meta">
+            <span id="movieReleaseYear"> — </span>
+
+            <span> • </span>
+
+            <span id="movieRuntime"> — </span>
+          </div>
+
+          <!-- =========================================
+                     GÊNEROS
+                ========================================== -->
+
+          <div id="movieGenres" class="movie-info__genres"></div>
+
+          <!-- =========================================
+                     NOTAS EXTERNAS
+                ========================================== -->
+
+          <div class="movie-info__ratings">
+            <div class="movie-rating">
+              <strong id="movieRating"> — </strong>
+
+              <span> IMDb </span>
             </div>
 
+            <div class="movie-rating">
+              <strong id="movieVotes"> — </strong>
 
-
-            <!-- CONTEÚDO -->
-
-            <div class="movie-info__content">
-
-
-                <span class="movie-info__eyebrow">
-                    MELHOR FILME
-                </span>
-
-
-
-                <h2 id="movieTitle" class="movie-info__title">
-                    —
-                </h2>
-
-
-
-                <p id="movieOriginalTitle" class="movie-info__original-title"></p>
-
-
-
-                <!-- ANO E DURAÇÃO -->
-
-                <div class="movie-info__meta">
-
-
-                    <span id="movieReleaseYear">
-                        —
-                    </span>
-
-
-                    <span>
-                        •
-                    </span>
-
-
-                    <span id="movieRuntime">
-                        —
-                    </span>
-
-
-                </div>
-
-
-
-                <!-- GÊNEROS -->
-
-                <div id="movieGenres" class="movie-info__genres"></div>
-
-
-
-                <!-- NOTAS -->
-
-                <div class="movie-info__ratings">
-
-
-                    <div class="movie-rating">
-
-
-                        <strong id="movieRating">
-                            —
-                        </strong>
-
-
-                        <span>
-                            IMDb
-                        </span>
-
-
-                    </div>
-
-
-
-                    <div class="movie-rating">
-
-
-                        <strong id="movieVotes">
-                            —
-                        </strong>
-
-
-                        <span>
-                            votos
-                        </span>
-
-
-                    </div>
-
-
-                </div>
-
-
-
-                <!-- DIRETOR -->
-
-                <div class="movie-info__director">
-
-
-                    <strong>
-                        Direção
-                    </strong>
-
-
-                    <span id="movieDirector">
-                        —
-                    </span>
-
-
-                </div>
-
-
-
-                <!-- SOBRE -->
-
-                <div class="movie-info__overview">
-
-
-                    <strong>
-                        Sobre o filme
-                    </strong>
-
-
-                    <p id="movieOverview">
-                        —
-                    </p>
-
-
-                </div>
-
-
+              <span> votos </span>
             </div>
 
+            <div class="movie-rating">
+              <strong id="movieMetacritic"> — </strong>
 
-        </section>
+              <span> Metacritic </span>
+            </div>
 
+            <div class="movie-rating">
+              <strong id="movieRottenTomatoes"> — </strong>
 
+              <span> Rotten Tomatoes </span>
+            </div>
+          </div>
+
+          <!-- =========================================
+     MINHA AVALIAÇÃO
+========================================== -->
+
+          <div class="movie-user-rating">
+            <div class="movie-user-rating__header">
+              <span class="movie-user-rating__label"> SUA NOTA </span>
+
+              <strong
+                id="movieUserRatingValue"
+                class="movie-user-rating__value"
+              >
+                —
+              </strong>
+            </div>
+
+            <div
+              id="movieStars"
+              class="movie-user-rating__stars"
+              aria-label="Sua avaliação"
+            >
+              <button
+                type="button"
+                class="movie-star"
+                data-rating="1"
+                aria-label="1 de 10"
+              >
+                ★
+              </button>
+
+              <button
+                type="button"
+                class="movie-star"
+                data-rating="2"
+                aria-label="2 de 10"
+              >
+                ★
+              </button>
+
+              <button
+                type="button"
+                class="movie-star"
+                data-rating="3"
+                aria-label="3 de 10"
+              >
+                ★
+              </button>
+
+              <button
+                type="button"
+                class="movie-star"
+                data-rating="4"
+                aria-label="4 de 10"
+              >
+                ★
+              </button>
+
+              <button
+                type="button"
+                class="movie-star"
+                data-rating="5"
+                aria-label="5 de 10"
+              >
+                ★
+              </button>
+
+              <button
+                type="button"
+                class="movie-star"
+                data-rating="6"
+                aria-label="6 de 10"
+              >
+                ★
+              </button>
+
+              <button
+                type="button"
+                class="movie-star"
+                data-rating="7"
+                aria-label="7 de 10"
+              >
+                ★
+              </button>
+
+              <button
+                type="button"
+                class="movie-star"
+                data-rating="8"
+                aria-label="8 de 10"
+              >
+                ★
+              </button>
+
+              <button
+                type="button"
+                class="movie-star"
+                data-rating="9"
+                aria-label="9 de 10"
+              >
+                ★
+              </button>
+
+              <button
+                type="button"
+                class="movie-star"
+                data-rating="10"
+                aria-label="10 de 10"
+              >
+                ★
+              </button>
+            </div>
+
+            <div class="movie-user-rating__actions">
+              <button
+                id="saveRatingButton"
+                type="button"
+                class="button button--primary"
+              >
+                Salvar nota
+              </button>
+
+              <button
+                id="deleteRatingButton"
+                type="button"
+                class="button button--secondary"
+                style="display: none"
+              >
+                Remover nota
+              </button>
+            </div>
+          </div>
+
+          <!-- =========================================
+                     DIRETOR
+                ========================================== -->
+
+          <div class="movie-info__director">
+            <strong> Direção </strong>
+
+            <span id="movieDirector"> — </span>
+          </div>
+
+          <!-- =========================================
+                     SOBRE
+                ========================================== -->
+          <div class="movie-info__overview">
+            <strong> Sobre o filme </strong>
+
+            <p id="movieOverview">—</p>
+          </div>
+        </div>
+      </section>
     </main>
 
-
-
-    <!-- ==========================
+    <!-- =====================================================
          SUPABASE
-    =========================== -->
+    ====================================================== -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
     <script src="./js/supabase.js"></script>
 
-
     <script src="./js/app.js"></script>
-
-
-</body>
-
+  </body>
 </html>

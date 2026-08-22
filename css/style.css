@@ -1920,3 +1920,407 @@ body {
             11px;
     }
 }
+
+/* =========================================================
+   AVALIAÇÃO PESSOAL - VERSÃO REFINADA
+========================================================= */
+
+.movie-user-rating {
+
+    margin-top: 20px;
+
+    padding-top: 18px;
+
+    border-top:
+        1px solid rgba(212, 175, 55, 0.18);
+}
+
+
+/* =========================================================
+   CABEÇALHO DA AVALIAÇÃO
+========================================================= */
+
+.movie-user-rating__header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 7px;
+}
+
+
+.movie-user-rating__label {
+
+    display: block;
+
+    color:
+        #d4af37;
+
+    font-size:
+        10px;
+
+    font-weight:
+        700;
+
+    letter-spacing:
+        1.8px;
+
+    line-height:
+        1;
+}
+
+
+.movie-user-rating__value {
+
+    min-width:
+        50px;
+
+    color:
+        #f1cf62;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size:
+        18px;
+
+    font-weight:
+        700;
+
+    line-height:
+        1;
+
+    text-align:
+        right;
+
+    text-shadow:
+        0 0 12px rgba(212, 175, 55, 0.18);
+}
+
+
+/* =========================================================
+   AVALIAÇÃO PESSOAL
+========================================================= */
+
+.movie-user-rating {
+
+    margin-top: 20px;
+
+    margin-bottom: 24px;
+
+    padding-top: 18px;
+
+    border-top:
+        1px solid rgba(212, 175, 55, 0.18);
+}
+
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+.movie-user-rating__header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 7px;
+}
+
+
+.movie-user-rating__label {
+
+    display: block;
+
+    color: #d4af37;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.8px;
+
+    line-height: 1;
+}
+
+
+.movie-user-rating__value {
+
+    min-width: 50px;
+
+    color: #f1cf62;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+    text-align: right;
+
+    text-shadow:
+        0 0 12px rgba(212, 175, 55, 0.18);
+}
+
+
+/* =========================================================
+   ESTRELAS
+========================================================= */
+
+.movie-user-rating__stars {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 2px;
+
+    margin:
+        7px 0 16px;
+}
+
+
+.movie-star {
+
+    appearance: none;
+
+    -webkit-appearance: none;
+
+    width: 30px;
+
+    height: 32px;
+
+    padding: 0;
+
+    margin: 0;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    color: transparent;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size: 28px;
+
+    line-height: 32px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        filter 0.15s ease;
+}
+
+
+/* =========================================================
+   ESTRELA VAZIA
+========================================================= */
+
+.movie-star {
+
+    background:
+        linear-gradient(to right,
+            rgba(212, 175, 55, 0.18),
+            rgba(212, 175, 55, 0.18));
+
+    -webkit-background-clip: text;
+
+    background-clip: text;
+}
+
+
+/* =========================================================
+   ESTRELA COMPLETA
+========================================================= */
+
+.movie-star.is-full {
+
+    background:
+        linear-gradient(to right,
+            #d4af37 0%,
+            #f1cf62 100%);
+
+    -webkit-background-clip: text;
+
+    background-clip: text;
+
+    text-shadow:
+        0 0 8px rgba(212, 175, 55, 0.35);
+}
+
+
+/* =========================================================
+   MEIA ESTRELA
+========================================================= */
+
+.movie-star.is-half {
+
+    background:
+        linear-gradient(to right,
+            #d4af37 0%,
+            #f1cf62 50%,
+            rgba(212, 175, 55, 0.18) 50%,
+            rgba(212, 175, 55, 0.18) 100%);
+
+    -webkit-background-clip: text;
+
+    background-clip: text;
+
+    text-shadow:
+        0 0 7px rgba(212, 175, 55, 0.25);
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.movie-star:hover {
+
+    transform:
+        scale(1.15);
+
+    filter:
+        brightness(1.2);
+}
+
+
+/* =========================================================
+   BOTÕES
+========================================================= */
+
+.movie-user-rating__actions {
+
+    display: flex;
+
+    width: 100%;
+
+    gap: 8px;
+
+    margin-top: 2px;
+}
+
+
+.movie-user-rating__actions .button {
+
+    flex: 1;
+
+    min-height: 42px;
+
+    margin: 0;
+}
+
+
+#saveRatingButton {
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.1px;
+}
+
+
+#deleteRatingButton {
+
+    max-width: 150px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .movie-user-rating {
+
+        margin-top: 16px;
+
+        margin-bottom: 20px;
+
+        padding-top: 15px;
+    }
+
+
+    .movie-user-rating__header {
+
+        margin-bottom: 6px;
+    }
+
+
+    .movie-user-rating__label {
+
+        font-size: 9px;
+
+        letter-spacing: 1.5px;
+    }
+
+
+    .movie-user-rating__value {
+
+        font-size: 17px;
+    }
+
+
+    .movie-user-rating__stars {
+
+        justify-content: center;
+
+        gap: 1px;
+
+        margin:
+            6px 0 15px;
+    }
+
+
+    .movie-star {
+
+        width: 27px;
+
+        height: 30px;
+
+        font-size: 25px;
+
+        line-height: 30px;
+    }
+
+
+    .movie-user-rating__actions {
+
+        flex-direction: column;
+
+        gap: 7px;
+    }
+
+
+    #deleteRatingButton {
+
+        max-width: none;
+    }
+}
+
+.movie-info__poster-image {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    border-radius: 12px;
+}

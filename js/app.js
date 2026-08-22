@@ -63,6 +63,12 @@ const historyList = document.getElementById("historyList");
 
 const movieInfo = document.getElementById("movieInfo");
 
+const moviePoster = document.getElementById("moviePoster");
+
+const movieMetacritic = document.getElementById("movieMetacritic");
+
+const movieRottenTomatoes = document.getElementById("movieRottenTomatoes");
+
 const movieTitle = document.getElementById("movieTitle");
 
 const movieOriginalTitle = document.getElementById("movieOriginalTitle");
@@ -80,6 +86,18 @@ const movieVotes = document.getElementById("movieVotes");
 const movieDirector = document.getElementById("movieDirector");
 
 const movieOverview = document.getElementById("movieOverview");
+
+const movieStars = document.getElementById("movieStars");
+
+const movieUserRatingValue = document.getElementById("movieUserRatingValue");
+
+const saveRatingButton = document.getElementById("saveRatingButton");
+
+const deleteRatingButton = document.getElementById("deleteRatingButton");
+
+let selectedUserRating = null;
+
+let currentMovieYear = null;
 
 /* =========================================================
    5. AUTENTICAÇÃO
@@ -375,69 +393,123 @@ async function getOscarMovie(year) {
    11. MOSTRAR FILME
 ========================================================= */
 
-function displayOscarMovie(movie) {
+async function displayOscarMovie(movie) {
+
   if (!movieInfo) {
     return;
   }
 
+  currentMovieYear = movie.year;
+
+  renderUserRating(null);
+
   movieInfo.style.display = "grid";
 
-  /* -----------------------------------------
-       TÍTULO
-  ----------------------------------------- */
 
-  if (movieTitle) {
-    movieTitle.textContent = movie.winner_title || "Título não informado";
+  /* =================================================
+     POSTER
+  ================================================= */
+
+  if (moviePoster) {
+
+    if (movie.poster_url) {
+
+      moviePoster.src = movie.poster_url;
+
+      moviePoster.alt =
+        movie.winner_title || "Poster do filme";
+
+      moviePoster.style.display = "block";
+
+    } else {
+
+      moviePoster.removeAttribute("src");
+
+      moviePoster.alt = "";
+
+      moviePoster.style.display = "none";
+    }
   }
 
-  /* -----------------------------------------
-       TÍTULO ORIGINAL
-  ----------------------------------------- */
+
+  /* =================================================
+     TÍTULO
+  ================================================= */
+
+  if (movieTitle) {
+
+    movieTitle.textContent =
+      movie.winner_title || "Título não informado";
+  }
+
+
+  /* =================================================
+     TÍTULO ORIGINAL
+  ================================================= */
 
   if (movieOriginalTitle) {
-    if (movie.original_title && movie.original_title !== movie.winner_title) {
-      movieOriginalTitle.textContent = movie.original_title;
+
+    if (
+      movie.original_title &&
+      movie.original_title !== movie.winner_title
+    ) {
+
+      movieOriginalTitle.textContent =
+        movie.original_title;
+
     } else {
+
       movieOriginalTitle.textContent = "";
     }
   }
 
-  /* -----------------------------------------
-       ANO DE LANÇAMENTO
-  ----------------------------------------- */
+
+  /* =================================================
+     ANO
+  ================================================= */
 
   if (movieReleaseYear) {
-    movieReleaseYear.textContent = movie.release_year || "Ano desconhecido";
+
+    movieReleaseYear.textContent =
+      movie.release_year || "Ano desconhecido";
   }
 
-  /* -----------------------------------------
-       DURAÇÃO
-  ----------------------------------------- */
+
+  /* =================================================
+     DURAÇÃO
+  ================================================= */
 
   if (movieRuntime) {
-    movieRuntime.textContent = movie.runtime_minutes
-      ? `${movie.runtime_minutes} min`
-      : "Duração não informada";
+
+    movieRuntime.textContent =
+      movie.runtime_minutes
+        ? `${movie.runtime_minutes} min`
+        : "Duração não informada";
   }
 
-  /* -----------------------------------------
-       GÊNEROS
-  ----------------------------------------- */
+
+  /* =================================================
+     GÊNEROS
+  ================================================= */
 
   if (movieGenres) {
+
     movieGenres.innerHTML = "";
 
     const genres = movie.genres
       ? movie.genres
-          .split(",")
-          .map((genre) => genre.trim())
-          .filter(Boolean)
+        .split(",")
+        .map((genre) => genre.trim())
+        .filter(Boolean)
       : [];
 
     genres.forEach((genre) => {
-      const element = document.createElement("span");
 
-      element.className = "movie-info__genre";
+      const element =
+        document.createElement("span");
+
+      element.className =
+        "movie-info__genre";
 
       element.textContent = genre;
 
@@ -445,51 +517,484 @@ function displayOscarMovie(movie) {
     });
   }
 
-  /* -----------------------------------------
-       NOTA IMDb
-  ----------------------------------------- */
+
+  /* =================================================
+     IMDb
+  ================================================= */
 
   if (movieRating) {
-    movieRating.textContent = movie.imdb_rating
-      ? `${Number(movie.imdb_rating).toFixed(1)}/10`
-      : "—";
+
+    movieRating.textContent =
+      movie.imdb_rating !== null &&
+        movie.imdb_rating !== undefined
+        ? `${Number(movie.imdb_rating).toFixed(1)}/10`
+        : "—";
   }
 
-  /* -----------------------------------------
-       VOTOS IMDb
-  ----------------------------------------- */
+
+  /* =================================================
+     VOTOS IMDb
+  ================================================= */
 
   if (movieVotes) {
-    movieVotes.textContent = movie.imdb_votes
-      ? Number(movie.imdb_votes).toLocaleString("pt-BR")
-      : "—";
+
+    movieVotes.textContent =
+      movie.imdb_votes !== null &&
+        movie.imdb_votes !== undefined
+        ? Number(movie.imdb_votes)
+          .toLocaleString("pt-BR")
+        : "—";
   }
 
-  /* -----------------------------------------
-       DIRETOR
-  ----------------------------------------- */
+
+  /* =================================================
+     METACRITIC
+  ================================================= */
+
+  if (movieMetacritic) {
+
+    movieMetacritic.textContent =
+      movie.metacritic_score !== null &&
+        movie.metacritic_score !== undefined
+        ? `${movie.metacritic_score}/100`
+        : "—";
+  }
+
+
+  /* =================================================
+     ROTTEN TOMATOES
+  ================================================= */
+
+  if (movieRottenTomatoes) {
+
+    movieRottenTomatoes.textContent =
+      movie.rotten_tomatoes_score !== null &&
+        movie.rotten_tomatoes_score !== undefined
+        ? `${movie.rotten_tomatoes_score}%`
+        : "—";
+  }
+
+
+  /* =================================================
+     DIRETOR
+  ================================================= */
 
   if (movieDirector) {
-    movieDirector.textContent = movie.director || "Não informado";
+
+    movieDirector.textContent =
+      movie.director || "Não informado";
   }
 
-  /* -----------------------------------------
-       SINOPSE
-  ----------------------------------------- */
+
+  /* =================================================
+     SINOPSE
+  ================================================= */
 
   if (movieOverview) {
-    movieOverview.textContent = movie.overview || "Sinopse não disponível.";
+
+    movieOverview.textContent =
+      movie.overview ||
+      "Sinopse não disponível.";
+  }
+
+
+  /* =================================================
+     AVALIAÇÃO PESSOAL
+  ================================================= */
+
+  try {
+
+    await loadUserRating(movie.year);
+
+  } catch (error) {
+
+    console.error(
+      "Erro ao carregar avaliação pessoal:",
+      error
+    );
+
+    renderUserRating(null);
   }
 }
 
 /* =========================================================
-   12. ESCONDER FILME
+   12. AVALIAÇÃO PESSOAL
+========================================================= */
+
+async function getOscarYearId(year) {
+  const { data, error } = await supabaseClient
+    .from("oscars_years")
+    .select("id")
+    .eq("year", year)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data.id;
+}
+
+
+function renderUserRating(
+  rating
+) {
+
+  selectedUserRating =
+    rating;
+
+
+  if (movieUserRatingValue) {
+
+    movieUserRatingValue.textContent =
+      rating !== null &&
+        rating !== undefined
+        ? `${Number(rating).toFixed(1)}/10`
+        : "—";
+
+  }
+
+
+  if (movieStars) {
+
+    movieStars
+      .querySelectorAll(
+        ".movie-star"
+      )
+      .forEach((star) => {
+
+        const starRating =
+          Number(
+            star.dataset.rating
+          );
+
+
+        star.classList.remove(
+          "is-full",
+          "is-half"
+        );
+
+
+        if (
+          rating >=
+          starRating
+        ) {
+
+          star.classList.add(
+            "is-full"
+          );
+
+        } else if (
+          rating ===
+          starRating - 0.5
+        ) {
+
+          star.classList.add(
+            "is-half"
+          );
+
+        }
+
+      });
+
+  }
+
+
+  if (deleteRatingButton) {
+
+    deleteRatingButton.style.display =
+      rating !== null &&
+        rating !== undefined
+        ? "block"
+        : "none";
+
+  }
+
+}
+
+
+async function loadUserRating(year) {
+
+  const {
+    data: { user },
+  } = await supabaseClient.auth.getUser();
+
+
+  if (!user) {
+
+    renderUserRating(null);
+
+    return;
+
+  }
+
+
+  const yearId = await getOscarYearId(year);
+
+
+  const { data, error } = await supabaseClient
+    .from("user_movie_ratings")
+    .select("rating")
+    .eq("user_id", user.id)
+    .eq("year_id", yearId)
+    .maybeSingle();
+
+
+  if (error) {
+
+    throw error;
+
+  }
+
+
+  renderUserRating(data?.rating ?? null);
+
+}
+
+
+async function saveUserRating() {
+
+  if (!currentMovieYear) {
+
+    return;
+
+  }
+
+
+  if (
+    selectedUserRating === null ||
+    selectedUserRating === undefined
+  ) {
+
+    alert("Selecione uma nota antes de salvar.");
+
+    return;
+
+  }
+
+
+  const {
+    data: { user },
+  } = await supabaseClient.auth.getUser();
+
+
+  if (!user) {
+
+    alert("Usuário não autenticado.");
+
+    return;
+
+  }
+
+
+  saveRatingButton.disabled = true;
+
+
+  try {
+
+    const yearId = await getOscarYearId(currentMovieYear);
+
+
+    const { error } = await supabaseClient
+      .from("user_movie_ratings")
+      .upsert(
+        {
+          user_id: user.id,
+
+          year_id: yearId,
+
+          rating: Number(selectedUserRating),
+
+          updated_at: new Date().toISOString(),
+        },
+        {
+          onConflict: "user_id,year_id",
+        }
+      );
+
+
+    if (error) {
+
+      throw error;
+
+    }
+
+
+    renderUserRating(
+      Number(selectedUserRating)
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Erro ao salvar avaliação:",
+      error
+    );
+
+    alert(
+      "Não foi possível salvar sua avaliação."
+    );
+
+
+  } finally {
+
+    saveRatingButton.disabled = false;
+
+  }
+
+}
+
+
+async function deleteUserRating() {
+
+  if (!currentMovieYear) {
+
+    return;
+
+  }
+
+
+  const {
+    data: { user },
+  } = await supabaseClient.auth.getUser();
+
+
+  if (!user) {
+
+    alert("Usuário não autenticado.");
+
+    return;
+
+  }
+
+
+  deleteRatingButton.disabled = true;
+
+
+  try {
+
+    const yearId = await getOscarYearId(
+      currentMovieYear
+    );
+
+
+    const { error } = await supabaseClient
+      .from("user_movie_ratings")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("year_id", yearId);
+
+
+    if (error) {
+
+      throw error;
+
+    }
+
+
+    renderUserRating(null);
+
+
+  } catch (error) {
+
+    console.error(
+      "Erro ao remover avaliação:",
+      error
+    );
+
+    alert(
+      "Não foi possível remover sua avaliação."
+    );
+
+
+  } finally {
+
+    deleteRatingButton.disabled = false;
+
+  }
+
+}
+
+
+function setupRatingStars() {
+
+  if (!movieStars) {
+    return;
+  }
+
+
+  const stars =
+    movieStars.querySelectorAll(
+      ".movie-star"
+    );
+
+
+  stars.forEach((star) => {
+
+    star.addEventListener(
+      "click",
+      (event) => {
+
+        const rect =
+          star.getBoundingClientRect();
+
+
+        const clickX =
+          event.clientX -
+          rect.left;
+
+
+        const isLeftHalf =
+          clickX <
+          rect.width / 2;
+
+
+        const baseRating =
+          Number(
+            star.dataset.rating
+          );
+
+
+        let rating;
+
+
+        if (isLeftHalf) {
+
+          rating =
+            baseRating - 0.5;
+
+        } else {
+
+          rating =
+            baseRating;
+        }
+
+
+        renderUserRating(
+          rating
+        );
+
+      }
+    );
+
+  });
+
+}
+
+
+/* =========================================================
+   13. ESCONDER FILME
 ========================================================= */
 
 function hideOscarMovie() {
+
   if (movieInfo) {
+
     movieInfo.style.display = "none";
+
   }
+
 }
 
 /* =========================================================
@@ -715,7 +1220,7 @@ async function finishSpin(winnerIndex) {
          MOSTRAR FILME
     ------------------------------------- */
 
-    displayOscarMovie(movie);
+    await displayOscarMovie(movie);
   } catch (error) {
     console.error("Erro ao carregar o filme:", error);
 
@@ -848,7 +1353,7 @@ function addHistory(year) {
 
       const movie = await getOscarMovie(year);
 
-      displayOscarMovie(movie);
+      await displayOscarMovie(movie);
 
       if (movieInfo) {
         movieInfo.scrollIntoView({
@@ -966,69 +1471,102 @@ async function reset() {
     return;
   }
 
-  resetButton.disabled = true;
+  const { error: ratingsError } = await supabaseClient
+    .from("user_movie_ratings")
+    .delete()
+    .eq("user_id", user.id);
 
+  if (ratingsError) {
+    throw ratingsError;
+  }
+
+  resetButton.disabled = true;
   spinButton.disabled = true;
 
   try {
-    const { error } = await supabaseClient
+    /* =================================================
+       APAGAR HISTÓRICO DE SORTEIOS
+    ================================================= */
+
+    const { error: spinsError } = await supabaseClient
       .from("user_spins")
       .delete()
       .eq("user_id", user.id);
 
-    if (error) {
-      throw error;
+    if (spinsError) {
+      throw spinsError;
     }
 
-    /* -------------------------------------
-         RESTAURAR SORTEIOS
-    ------------------------------------- */
+    /* =================================================
+       APAGAR FILMES MARCADOS COMO ASSISTIDOS
+    ================================================= */
+
+    const { error: watchedError } = await supabaseClient
+      .from("user_watched_years")
+      .delete()
+      .eq("user_id", user.id);
+
+    if (watchedError) {
+      throw watchedError;
+    }
+
+    /* =================================================
+       LIMPAR ESTADO LOCAL
+    ================================================= */
 
     drawnYears = new Set();
 
-    /* -------------------------------------
-         MANTER ASSISTIDOS FORA DA ROLETA
-    ------------------------------------- */
+    watchedYears = new Set();
 
-    updateAvailableYears();
+    availableYears = [...allYears];
 
-    /* -------------------------------------
-         ROTATION
-    ------------------------------------- */
+    displayYears = [...availableYears];
+
+    /* =================================================
+       RESETAR ROTAÇÃO
+    ================================================= */
 
     rotation = 0;
 
-    /* -------------------------------------
-         CONTADOR
-    ------------------------------------- */
+    /* =================================================
+       RESETAR CONTADOR DE GIROS
+    ================================================= */
 
     spinCount = 0;
 
-    /* -------------------------------------
-         RESULTADO
-    ------------------------------------- */
+    /* =================================================
+       RESETAR RESULTADO
+    ================================================= */
 
     resultElement.textContent = "—";
 
-    /* -------------------------------------
-         FILME
-    ------------------------------------- */
+    resultElement.classList.remove("animate");
+
+    /* =================================================
+       ESCONDER CARD DO FILME
+    ================================================= */
 
     hideOscarMovie();
 
-    /* -------------------------------------
-         HISTÓRICO
-    ------------------------------------- */
+    /* =================================================
+       LIMPAR HISTÓRICO VISUAL
+    ================================================= */
 
     historyList.innerHTML = "";
 
-    /* -------------------------------------
-         ATUALIZAR
-    ------------------------------------- */
+    /* =================================================
+       ATUALIZAR ESTATÍSTICAS
+    ================================================= */
 
     updateStats();
 
+    /* =================================================
+       REDESENHAR ROLETA
+    ================================================= */
+
     drawWheel();
+
+    console.log("Roleta restaurada completamente.");
   } catch (error) {
     console.error("Erro ao restaurar roleta:", error);
 
@@ -1364,6 +1902,32 @@ spinButton.addEventListener("click", spin);
 resetButton.addEventListener("click", reset);
 
 window.addEventListener("resize", resizeCanvas);
+
+/* =========================================================
+   EVENTOS DA AVALIAÇÃO
+========================================================= */
+
+if (saveRatingButton) {
+
+  saveRatingButton.addEventListener(
+    "click",
+    saveUserRating
+  );
+
+}
+
+
+if (deleteRatingButton) {
+
+  deleteRatingButton.addEventListener(
+    "click",
+    deleteUserRating
+  );
+
+}
+
+
+setupRatingStars();
 
 /* =========================================================
    34. TECLADO
