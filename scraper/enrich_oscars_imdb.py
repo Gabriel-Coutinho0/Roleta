@@ -78,7 +78,7 @@ FILES = {
 
 OMDB_URL = "https://www.omdbapi.com/"
 
-OMDB_API_KEY = "f84dbc8"
+OMDB_API_KEY = ""
 
 
 # =========================================================
@@ -342,7 +342,7 @@ def load_omdb(
             "\n"
             "OMDB_API_KEY não foi configurada.\n\n"
             "No PowerShell, execute:\n\n"
-            '$env:OMDB_API_KEY="f84dbc8"\n\n'
+            '$env:OMDB_API_KEY=""\n\n'
             "Depois execute novamente:\n\n"
             "python enrich_oscars_imdb.py\n"
         )
@@ -532,7 +532,7 @@ def main() -> None:
 
             "No PowerShell:\n\n"
 
-            '$env:OMDB_API_KEY="f84dbc8"\n\n'
+            '$env:OMDB_API_KEY=""\n\n'
 
             "Depois:\n\n"
 
