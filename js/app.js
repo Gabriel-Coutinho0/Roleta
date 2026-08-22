@@ -95,6 +95,16 @@ const saveRatingButton = document.getElementById("saveRatingButton");
 
 const deleteRatingButton = document.getElementById("deleteRatingButton");
 
+const movieRatingBadge =
+  document.getElementById("movieRatingBadge");
+
+const movieRatingBadgeText =
+  document.getElementById("movieRatingBadgeText");
+
+const movieRatingBadgeValue =
+  document.getElementById("movieRatingBadgeValue");
+
+
 let selectedUserRating = null;
 
 let currentMovieYear = null;
@@ -635,6 +645,69 @@ async function getOscarYearId(year) {
   return data.id;
 }
 
+function updateMovieRatingBadge(rating) {
+
+  if (
+    !movieRatingBadge ||
+    !movieRatingBadgeText ||
+    !movieRatingBadgeValue
+  ) {
+    return;
+  }
+
+  if (rating === null || rating === undefined) {
+
+    movieRatingBadgeText.textContent = "—";
+    movieRatingBadgeValue.textContent = "Sem nota";
+
+    movieRatingBadge.className =
+      "movie-rating-badge";
+
+    return;
+  }
+
+  const value = Number(rating);
+
+  movieRatingBadgeValue.textContent =
+    value.toFixed(1);
+
+
+  if (value <= 4) {
+
+    movieRatingBadgeText.textContent =
+      "Veio podi";
+
+    movieRatingBadge.className =
+      "movie-rating-badge movie-rating-badge--ruim";
+
+
+  } else if (value <= 7) {
+
+    movieRatingBadgeText.textContent =
+      "Mééééééé";
+
+    movieRatingBadge.className =
+      "movie-rating-badge movie-rating-badge--medio";
+
+
+  } else if (value <= 9) {
+
+    movieRatingBadgeText.textContent =
+      "Ó pega";
+
+    movieRatingBadge.className =
+      "movie-rating-badge movie-rating-badge--bom";
+
+
+  } else {
+
+    movieRatingBadgeText.textContent =
+      "Slc entra dois de uma vez!!!";
+
+    movieRatingBadge.className =
+      "movie-rating-badge movie-rating-badge--muito-bom";
+  }
+}
 
 function renderUserRating(
   rating
@@ -643,7 +716,11 @@ function renderUserRating(
   selectedUserRating =
     rating;
 
+  // Atualiza o ícone da nota
+  updateMovieRatingBadge(rating);
 
+
+  // Atualiza o valor da nota
   if (movieUserRatingValue) {
 
     movieUserRatingValue.textContent =
